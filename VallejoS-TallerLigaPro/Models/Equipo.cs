@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VallejoS_TallerLigaPro.Models
 {
-    
+
     public class Equipo
     {
         [Key]
@@ -30,11 +30,11 @@ namespace VallejoS_TallerLigaPro.Models
         [DisplayName("Partidos perdidos")]
         public int PartidosPerdidos { get; set; }
 
-        
+
         [DisplayName("Puntos totales")]
         public int Puntos => PartidosGanados * 3 + PartidosEmpatados;
 
-        
+
         public bool ValidarPartidos() => PartidosJugados == (PartidosGanados + PartidosEmpatados + PartidosPerdidos);
     }
 }
