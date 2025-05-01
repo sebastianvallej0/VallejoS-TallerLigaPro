@@ -1,4 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<DBSqlServer_VallejoS_TallerLigaPro>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DBSqlServer_VallejoS_TallerLigaPro") ?? throw new InvalidOperationException("Connection string 'DBSqlServer_VallejoS_TallerLigaPro' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
