@@ -25,13 +25,14 @@ namespace VallejoS_TallerLigaPro.Models
         [Range(0, 100)]
         public int PartidosPerdidos { get; set; }
 
+        [DisplayName("Puntos acumulados")] // Etiqueta personalizada
         public int Puntos
         {
             get
             {
-                int puntos = PartidosGanados * 3 + PartidosEmpatados;
-                return puntos;
+                return PartidosGanados * 3 + PartidosEmpatados; // Cálculo de los puntos
             }
         }
     }
 }
+
