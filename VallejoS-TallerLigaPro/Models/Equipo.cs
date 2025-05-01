@@ -3,38 +3,35 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VallejoS_TallerLigaPro.Models
 {
-
     public class Equipo
     {
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El nombre del equipo es obligatorio.")]
-        [MaxLength(100, ErrorMessage = "El nombre no puede exceder los 100 caracteres.")]
+        [Required]
+        [MaxLength(100)]
         [DisplayName("Nombre del equipo")]
         public string Nombre { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Los partidos jugados deben estar entre 0 y 100.")]
-        [DisplayName("Partidos jugados")]
+        [Range(0, 100)]
         public int PartidosJugados { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Los partidos ganados deben estar entre 0 y 100.")]
-        [DisplayName("Partidos ganados")]
+        [Range(0, 100)]
         public int PartidosGanados { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Los partidos empatados deben estar entre 0 y 100.")]
-        [DisplayName("Partidos empatados")]
+        [Range(0, 100)]
         public int PartidosEmpatados { get; set; }
 
-        [Range(0, 100, ErrorMessage = "Los partidos perdidos deben estar entre 0 y 100.")]
-        [DisplayName("Partidos perdidos")]
+        [Range(0, 100)]
         public int PartidosPerdidos { get; set; }
 
-
-        [DisplayName("Puntos totales")]
-        public int Puntos => PartidosGanados * 3 + PartidosEmpatados;
-
-
-        public bool ValidarPartidos() => PartidosJugados == (PartidosGanados + PartidosEmpatados + PartidosPerdidos);
+        public int Puntos
+        {
+            get
+            {
+                int puntos = PartidosGanados * 3 + PartidosEmpatados;
+                return puntos;
+            }
+        }
     }
 }

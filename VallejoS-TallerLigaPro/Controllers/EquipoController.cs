@@ -1,81 +1,62 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Cryptography.X509Certificates;
 using VallejoS_TallerLigaPro.Models;
-using VallejoS_TallerLigaPro.Interfaces;
+using VallejoS_TallerLigaPro.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
 
 namespace VallejoS_TallerLigaPro.Controllers
 {
     public class EquipoController : Controller
     {
-        private readonly IEquipoRepository _repository;
+        public EquipoRepository _repository;
 
-        // Se usa inyección de dependencias para el repositorio
-        public EquipoController(IEquipoRepository repository)
+        public EquipoController()
         {
-            _repository = repository;
+            _repository = new EquipoRepository();
         }
 
-        // Vista principal con el listado de equipos
-        public IActionResult Index()
+        public ActionResult List()
         {
             var equipos = _repository.DevuelveListadoEquipos();
-            var ordenados = equipos.OrderByDescending(e => e.PartidosGanados).ToList(); // orden descendente por ganados
-            return View(ordenados);
+            equipos = equipos.OrderBy(item => item.PartidosGanados);
+            //equipos = equipos.Where(item => item.Nombre == "Liga de Quito"); 
+
+            return View(equipos);
         }
 
-        // Mostrar formulario para crear equipo
-        public IActionResult Create()
+        public ActionResult Create()
         {
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Equipo equipo)
+        public ActionResult Edit(int Id)
         {
-            if (ModelState.IsValid)
-            {
-                _repository.CrearEquipo(equipo);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(equipo);
-        }
-
-        // Mostrar formulario para editar un equipo existente
-        public IActionResult Edit(int id)
-        {
-            var equipo = _repository.DevuelveInfoEquipo(id);
-            if (equipo == null) return NotFound();
+            EquipoRepository repository = new EquipoRepository();
+            var equipo = repository.DevuelveEquipoPorID(Id);
             return View(equipo);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Equipo equipo)
+        public ActionResult Edit(int Id, Equipo equipo)
         {
-            if (id != equipo.Id) return NotFound();
-
-            if (ModelState.IsValid)
+            //proceso de guardar
+            try
             {
-                _repository.EditarEquipo(equipo);
-                return RedirectToAction(nameof(Index));
+                EquipoRepository repository = new EquipoRepository();
+                repository.ActualizarEquipo(Id, equipo);
+                return RedirectToAction(nameof(List));
             }
-            return View(equipo);
+            catch
+            {
+                return View();
+            }
         }
 
-        // Mostrar confirmación para eliminar un equipo
-        public IActionResult Delete(int id)
+        public ActionResult Delete(int Id)
         {
-            var equipo = _repository.DevuelveInfoEquipo(id);
-            if (equipo == null) return NotFound();
-            return View(equipo);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            _repository.EliminarEquipo(id);
-            return RedirectToAction(nameof(Index));
+            var e = _repository.DevuelveEquipoPorID(Id);
+            return View(e);
         }
     }
 }
