@@ -1,59 +1,41 @@
-﻿@model IEnumerable<VallejoS_TallerLigaPro.Models.Equipo>
+﻿@model List<VallejoS_TallerLigaPro.Models.Equipo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listado de Equipos";
 }
 
-<h1>Index</h1>
+<h2>Listado de Equipos</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Crear" class="btn btn-success">Agregar Equipo</a>
 </p>
-<table class="table">
+
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PartidosJugados)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PartidosGanados)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PartidosEmpatados)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PartidosPerdidos)
-            </th>
-            <th></th>
+            <th>ID</th>
+            <th>Nombre del equipo</th>
+            <th>Partidos Jugados</th>
+            <th>Ganados</th>
+            <th>Empatados</th>
+            <th>Perdidos</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartidosJugados)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartidosGanados)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartidosEmpatados)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartidosPerdidos)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var equipo in Model)
+        {
+            <tr>
+                <td>@equipo.Id</td>
+                <td>@equipo.Nombre</td>
+                <td>@equipo.PartidosJugados</td>
+                <td>@equipo.PartidosGanados</td>
+                <td>@equipo.PartidosEmpatados</td>
+                <td>@equipo.PartidosPerdidos</td>
+                <td>
+                    <a asp-action="Eliminar" asp-route-id="@equipo.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

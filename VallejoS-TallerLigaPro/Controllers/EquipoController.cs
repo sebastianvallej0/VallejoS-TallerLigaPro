@@ -1,156 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using VallejoS_TallerLigaPro.Interfaces;
 using VallejoS_TallerLigaPro.Models;
 
 namespace VallejoS_TallerLigaPro.Controllers
 {
     public class EquipoController : Controller
     {
-        private readonly DBSqlServer_VallejoS_TallerLigaPro _context;
+        private readonly IEquipoRepository _equipoRepo;
 
-        public EquipoController(DBSqlServer_VallejoS_TallerLigaPro context)
+        public EquipoController(IEquipoRepository equipoRepo)
         {
-            _context = context;
+            _equipoRepo = equipoRepo;
         }
 
-        // GET: Equipo
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Equipo.ToListAsync());
+            var equipos = _equipoRepo.DevuelveListadoEquipos();
+            return View(equipos); // esto carga la vista Index.cshtml en /Views/Equipo/
         }
 
-        // GET: Equipo/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var equipo = await _context.Equipo
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (equipo == null)
-            {
-                return NotFound();
-            }
-
-            return View(equipo);
-        }
-
-        // GET: Equipo/Create
-        public IActionResult Create()
+        public IActionResult Crear()
         {
             return View();
         }
 
-        // POST: Equipo/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,PartidosJugados,PartidosGanados,PartidosEmpatados,PartidosPerdidos")] Equipo equipo)
+        public IActionResult Crear(Equipo equipo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(equipo);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _equipoRepo.CrearEquipo(equipo);
+                return RedirectToAction("Index");
             }
             return View(equipo);
         }
 
-        // GET: Equipo/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Eliminar(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var equipo = await _context.Equipo.FindAsync(id);
-            if (equipo == null)
-            {
-                return NotFound();
-            }
-            return View(equipo);
-        }
-
-        // POST: Equipo/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,PartidosJugados,PartidosGanados,PartidosEmpatados,PartidosPerdidos")] Equipo equipo)
-        {
-            if (id != equipo.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(equipo);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EquipoExists(equipo.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(equipo);
-        }
-
-        // GET: Equipo/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var equipo = await _context.Equipo
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (equipo == null)
-            {
-                return NotFound();
-            }
-
-            return View(equipo);
-        }
-
-        // POST: Equipo/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var equipo = await _context.Equipo.FindAsync(id);
-            if (equipo != null)
-            {
-                _context.Equipo.Remove(equipo);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool EquipoExists(int id)
-        {
-            return _context.Equipo.Any(e => e.Id == id);
+            _equipoRepo.EliminarEquipo(id);
+            return RedirectToAction("Index");
         }
     }
 }
